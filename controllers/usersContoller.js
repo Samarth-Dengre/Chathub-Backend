@@ -61,11 +61,13 @@ module.exports.login = async (req, res) => {
     return res.json({
       status: false,
       msg: "Username or passsword incorrect",
+      error: "No error"
     });
   } catch (error) {
     return res.json({
       msg: "Some error at our end",
       status: false,
+      error
     });
   }
 };
