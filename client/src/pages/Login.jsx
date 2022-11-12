@@ -11,6 +11,7 @@ import Input from "../assets/Input";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../store/user-slice";
 import NavBar from "../components/NavBar";
+import { ContentPasteSearchOutlined } from "@mui/icons-material";
 
 export default function Login() {
   const [values, setValues] = useState({
@@ -40,6 +41,7 @@ export default function Login() {
 
       if (data.status === false) {
         toast.error(data.msg, toastOptions);
+        console.log(data.eror);
         return;
       }
       if (data.status === true) {
