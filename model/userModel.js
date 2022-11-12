@@ -1,0 +1,57 @@
+const mongoose = require("mongoose");
+
+const UserSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      min: 3,
+      max: 20,
+      unique: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      max: 50,
+    },
+    password: {
+      type: String,
+      required: true,
+      min: 8,
+    },
+    isAvatarImageSet: {
+      type: Boolean,
+      default: false,
+    },
+    avatarImage: {
+      type: String,
+      default: "",
+    },
+    friends: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Friends",
+      required: true,
+    },
+    about: {
+      type: String,
+      default: "I am new to ChatHub",
+    },
+    socialMedia: {
+      type: mongoose.SchemaTypes.Mixed,
+      default: {
+        linkedin: "Please Update",
+        github: "Please Update",
+        twitter: "Please Update",
+        work_email: "Please Update",
+      },
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const User = mongoose.model("User", UserSchema);
+
+module.exports = User;
