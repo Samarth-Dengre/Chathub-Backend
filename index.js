@@ -23,9 +23,9 @@ const server = app.listen(process.env.PORT || 5000, () => {
 
 const io = socket(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://chathubreact.herokuapp.com",
     credentials: true,
-  },
+  }, 
 });
 
 global.onlineUsers = new Map();
