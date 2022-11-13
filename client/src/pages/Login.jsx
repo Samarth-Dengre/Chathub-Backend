@@ -40,7 +40,7 @@ export default function Login() {
 
       if (data.status === false) {
         toast.error(data.msg, toastOptions);
-        console.log(data.eror);
+        console.log(data.error);
         return;
       }
       if (data.status === true) {
