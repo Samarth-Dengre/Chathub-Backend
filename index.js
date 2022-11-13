@@ -15,7 +15,7 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = socket(server, {
   cors: {
-    origin: "https://chathubreact.herokuapp.com",
+    origin: "https://stunning-madeleine-57de3f.netlify.app",
     credentials: true,
   }, 
 });
