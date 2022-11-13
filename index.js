@@ -8,8 +8,10 @@ require("dotenv").config();
 app.use(
   cors({
     origin: "https://stunning-madeleine-57de3f.netlify.app",
+    methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   })
 );
+
 app.use(express.json());
 app.use("/", require("./routes"));
 
