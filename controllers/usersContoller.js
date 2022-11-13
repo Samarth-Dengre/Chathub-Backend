@@ -117,11 +117,10 @@ module.exports.getAllUsers = async (req, res) => {
 module.exports.getTotalUsers = async (req, res) => {
   const users = await User.find({});
   const total = users.length;
-  res.send({ title: "samarth" });
-  // return res.json({
-  //   status: true,
-  //   totalUsers: total,
-  // });
+  return res.json({
+    status: true,
+    totalUsers: total,
+  });
 };
 
 module.exports.searchUsers = async (req, res) => {
