@@ -9,4 +9,5 @@ router.get('/getTotalUsers', UsersController.getTotalUsers);
 router.get('/searchUsers/:value', UsersController.searchUsers);
 router.get('/userDetails/:id', UsersController.getUserDetails);
 router.post('/updateDetails', UsersController.updateUser);
+router.post('/updateAbout', UsersController.updateAbout);
 module.exports = router;
