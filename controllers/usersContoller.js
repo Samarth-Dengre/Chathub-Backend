@@ -212,7 +212,7 @@ module.exports.updateAbout = async () => {
     const id = req.body.id;
     const about = req.body.about;
 
-    const user = await findByIdAndUpdate(id, {
+    const user = await User.findByIdAndUpdate(id, {
       about: about,
     });
 
@@ -222,7 +222,7 @@ module.exports.updateAbout = async () => {
       status: true,
       about: about,
     });
-    
+
   } catch (error) {
     return res.json({
       status: false,
