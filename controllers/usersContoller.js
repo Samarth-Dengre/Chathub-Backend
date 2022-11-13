@@ -207,7 +207,7 @@ module.exports.updateUser = async (req, res) => {
   }
 };
 
-module.exports.updateAbout = async () => {
+module.exports.updateAbout = async (req, res) => {
   try {
     const id = req.body.id;
     const about = req.body.about;
