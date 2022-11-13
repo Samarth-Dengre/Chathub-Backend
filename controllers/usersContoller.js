@@ -42,7 +42,6 @@ module.exports.register = async (req, res, next) => {
 
 module.exports.login = async (req, res) => {
   try {
-
     console.log("In here");
     const { username, password } = req.body;
     const user = await User.findOne({ username });
@@ -68,7 +67,7 @@ module.exports.login = async (req, res) => {
     return res.json({
       msg: "Some error at our end",
       status: false,
-      error
+      error,
     });
   }
 };
@@ -118,10 +117,11 @@ module.exports.getAllUsers = async (req, res) => {
 module.exports.getTotalUsers = async (req, res) => {
   const users = await User.find({});
   const total = users.length;
-  return res.json({
-    status: true,
-    totalUsers: total,
-  });
+  res.send({ title: "samarth" });
+  // return res.json({
+  //   status: true,
+  //   totalUsers: total,
+  // });
 };
 
 module.exports.searchUsers = async (req, res) => {
