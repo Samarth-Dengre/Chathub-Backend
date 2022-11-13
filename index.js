@@ -9,6 +9,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/", require("./routes"));
 
+
 if (process.env.NODE_ENV == "production") {
   app.use(express.static("./client/build"));
   const path = require("path");
@@ -17,7 +18,7 @@ if (process.env.NODE_ENV == "production") {
   });
 }
 
-const server = app.listen(process.env.PORT || 5000, () => {
+const server = app.listen(process.env.PORT, () => {
   console.log("Server started at port", process.env.PORT);
 });
 
