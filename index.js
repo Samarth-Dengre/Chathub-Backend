@@ -5,7 +5,11 @@ const socket = require("socket.io");
 const app = express();
 require("dotenv").config();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://stunning-madeleine-57de3f.netlify.app",
+  })
+);
 app.use(express.json());
 app.use("/", require("./routes"));
 
@@ -17,7 +21,7 @@ const io = socket(server, {
   cors: {
     origin: "https://stunning-madeleine-57de3f.netlify.app",
     credentials: true,
-  }, 
+  },
 });
 
 global.onlineUsers = new Map();
