@@ -1,6 +1,7 @@
 const User = require("../model/userModel");
 const bcrypt = require("bcrypt");
 const Friends = require("../model/friends");
+const { findByIdAndUpdate } = require("../model/userModel");
 
 module.exports.register = async (req, res, next) => {
   try {
@@ -199,6 +200,29 @@ module.exports.updateUser = async (req, res) => {
     return res.json({
       status: false,
     });
+  } catch (error) {
+    return res.json({
+      status: false,
+    });
+  }
+};
+
+module.exports.updateAbout = async () => {
+  try {
+    const id = req.body.id;
+    const about = req.body.about;
+
+    const user = await findByIdAndUpdate(id, {
+      about: about,
+    });
+
+    await user.save();
+
+    return res.json({
+      status: true,
+      about: about,
+    });
+    
   } catch (error) {
     return res.json({
       status: false,
