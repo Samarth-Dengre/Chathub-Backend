@@ -129,7 +129,7 @@ module.exports.searchUsers = async (req, res) => {
     const users = await User.find({});
     const value = req.params.value;
     const requestedUsers = await users.filter((user) => {
-      return user.username.toLowerCase().includes(value.toLowerCase());
+      return user.username.toLowerCase().startsWith(value.toLowerCase());
     });
     return res.json({
       status: true,
