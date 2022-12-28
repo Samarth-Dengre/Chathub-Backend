@@ -1,11 +1,23 @@
 const User = require("../model/userModel");
 const bcrypt = require("bcrypt");
 const Friends = require("../model/friends");
-const { findByIdAndUpdate } = require("../model/userModel");
+const Mailjet = require("node-mailjet");
+const EmailVerification = require("../model/emailVerification");
 
 module.exports.register = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, codeId, code } = req.body;
+
+    const emailVerification = await EmailVerification.findById(codeId);
+    if (!emailVerification || emailVerification.code !== code) {
+      await EmailVerification.findByIdAndDelete(codeId);
+      return res.json({
+        msg: "Invalid code",
+        status: false,
+      });
+    }
+    await EmailVerification.findByIdAndDelete(codeId);
+
     const usernameCheck = await User.findOne({ username });
     if (usernameCheck) {
       return res.json({
@@ -16,7 +28,7 @@ module.exports.register = async (req, res, next) => {
     const emailCheck = await User.findOne({ email });
     if (emailCheck) {
       return res.json({
-        msg: "Email already exists",
+        msg: "This email is already registered",
         status: false,
       });
     }
@@ -29,6 +41,12 @@ module.exports.register = async (req, res, next) => {
       username,
       password: hashedPassword,
       friends: friends._id,
+      socialMedia: {
+        work_email: email,
+        linkedin: "Please update your linkedin handle",
+        github: "Please update your github handle",
+        twitter: "Please update your twitter handle",
+      },
     });
 
     delete user.password;
@@ -43,7 +61,6 @@ module.exports.register = async (req, res, next) => {
 
 module.exports.login = async (req, res) => {
   try {
-    console.log("In here");
     const { username, password } = req.body;
     const user = await User.findOne({ username });
     if (user) {
@@ -222,10 +239,56 @@ module.exports.updateAbout = async (req, res) => {
       status: true,
       about: about,
     });
-
   } catch (error) {
     return res.json({
       status: false,
     });
+  }
+};
+
+// Sending email verification link to the user
+module.exports.sendEmailVerificationLink = async (req, res) => {
+  const mailjet = await Mailjet.apiConnect(
+    "cc3070e7b6bf2b3919ce07ddf42b4483",
+    "7277d293795a7ec381befc21f2f29683"
+  );
+
+  const email = req.body.email;
+  const username = req.body.username;
+
+  const code = Math.floor(100000 + Math.random() * 900000);
+  const codeId = await EmailVerification.create({
+    code: code,
+  });
+
+  try {
+    const request = await mailjet.post("send", { version: "v3.1" }).request({
+      Messages: [
+        {
+          From: {
+            Email: "dengresamarth113@gmail.com",
+            Name: "ChatHub",
+          },
+          To: [
+            {
+              Email: email,
+              Name: username,
+            },
+          ],
+          Subject: "Email Verification",
+          TextPart: "Email Verification",
+          HTMLPart: `<h3>Dear ${username}, 
+          use this code to verify your email address: ${code}
+          </h3>`,
+        },
+      ],
+    });
+
+    return res.status(200).json({ msg: "Email Sent", codeId: codeId._id });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(400)
+      .json({ msg: "An error occured while sending message" });
   }
 };

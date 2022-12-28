@@ -15,8 +15,8 @@ app.use(
 app.use(express.json());
 app.use("/", require("./routes"));
 
-const server = app.listen(process.env.PORT, () => {
-  console.log("Server started at port", process.env.PORT);
+const server = app.listen(process.env.PORT || 5000, () => {
+  console.log("Server started at port", process.env.PORT || 5000);
 });
 
 const io = socket(server, {

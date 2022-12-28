@@ -39,12 +39,6 @@ const UserSchema = new mongoose.Schema(
     },
     socialMedia: {
       type: mongoose.SchemaTypes.Mixed,
-      default: {
-        linkedin: "Please Update",
-        github: "Please Update",
-        twitter: "Please Update",
-        work_email: "Please Update",
-      },
     },
   },
   {
