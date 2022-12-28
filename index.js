@@ -7,7 +7,7 @@ require("dotenv").config();
 
 app.use(
   cors({
-    origin: ["https://chathub2411.netlify.app", "http://localhost:3000"],
+    origin: ["https://stunning-madeleine-57de3f.netlify.app", "http://localhost:3000"],
     methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   })
 );
@@ -21,7 +21,7 @@ const server = app.listen(process.env.PORT || 5000, () => {
 
 const io = socket(server, {
   cors: {
-    origin: ["https://chathub2411.netlify.app", "http://localhost:3000"],
+    origin: ["https://stunning-madeleine-57de3f.netlify.app", "http://localhost:3000"],
     credentials: true,
   },
 });
