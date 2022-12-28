@@ -292,3 +292,108 @@ module.exports.sendEmailVerificationLink = async (req, res) => {
       .json({ msg: "An error occured while sending message" });
   }
 };
+
+// Verifying the email for password reset
+module.exports.sendEmailVerificationLinkForResetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({
+    email: email,
+  });
+
+  if (!user) {
+    return res.json({
+      status: false,
+      msg: "This email is not registered with us",
+    });
+  }
+
+  const mailjet = await Mailjet.apiConnect(
+    "cc3070e7b6bf2b3919ce07ddf42b4483",
+    "7277d293795a7ec381befc21f2f29683"
+  );
+
+  const code = Math.floor(100000 + Math.random() * 900000);
+  const codeId = await EmailVerification.create({
+    code: code,
+  });
+
+  try {
+    const request = await mailjet.post("send", { version: "v3.1" }).request({
+      Messages: [
+        {
+          From: {
+            Email: "dengresamarth113@gmail.com",
+            Name: "ChatHub",
+          },
+          To: [
+            {
+              Email: email,
+              Name: user.username,
+            },
+          ],
+          Subject: "Email Verification",
+          TextPart: "Email Verification",
+          HTMLPart: `<h3>Dear ${user.username},
+          use this code to verify your email address: ${code} for password reset
+          </h3>`,
+        },
+      ],
+    });
+
+    return res.json({
+      status: true,
+      msg: "Email Sent",
+      codeId: codeId._id,
+    });
+  } catch (error) {
+    return res.json({
+      status: false,
+      msg: "An error occured while sending email",
+    });
+  }
+};
+
+// Passowrd reset
+module.exports.resetPassword = async (req, res) => {
+  try {
+    const { email, codeId, code, password } = req.body;
+    const user = await User.findOne({
+      email: email,
+    });
+
+    if (!user) {
+      return res.json({
+        status: false,
+        msg: "This email is not registered with us",
+      });
+    }
+
+    const emailVerification = await EmailVerification.findById(codeId);
+
+    if (emailVerification.code === code) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const updatedUser = await User.findByIdAndUpdate(user._id, {
+        password: hashedPassword,
+      });
+
+      await updatedUser.save();
+
+      return res.json({
+        status: true,
+        msg: "Password reset successful",
+      });
+    } else {
+      return res.json({
+        status: false,
+        msg: "Invalid code",
+      });
+    }
+  } catch (error) {
+    return res.json({
+      status: false,
+      msg: "An error occured",
+    });
+  }
+};
