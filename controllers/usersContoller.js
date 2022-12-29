@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const Friends = require("../model/friends");
 const Mailjet = require("node-mailjet");
 const EmailVerification = require("../model/emailVerification");
+const { isValidObjectId, default: mongoose } = require("mongoose");
 
 module.exports.register = async (req, res, next) => {
   try {
@@ -256,6 +257,15 @@ module.exports.sendEmailVerificationLink = async (req, res) => {
   const email = req.body.email;
   const username = req.body.username;
 
+  const registeredUser = await User.findOne({ email: email });
+
+  if (registeredUser) {
+    return res.json({
+      status: false,
+      msg: "Email already registered with us",
+    });
+  }
+
   const code = Math.floor(100000 + Math.random() * 900000);
   const codeId = await EmailVerification.create({
     code: code,
@@ -266,7 +276,7 @@ module.exports.sendEmailVerificationLink = async (req, res) => {
       Messages: [
         {
           From: {
-            Email: "dengresamarth113@gmail.com",
+            Email: "teamsocialify@gmail.com",
             Name: "ChatHub",
           },
           To: [
@@ -284,7 +294,7 @@ module.exports.sendEmailVerificationLink = async (req, res) => {
       ],
     });
 
-    return res.status(200).json({ msg: "Email Sent", codeId: codeId._id });
+    return res.json({ status: true, msg: "Email Sent", codeId: codeId._id });
   } catch (error) {
     console.log(error);
     return res
@@ -323,7 +333,7 @@ module.exports.sendEmailVerificationLinkForResetPassword = async (req, res) => {
       Messages: [
         {
           From: {
-            Email: "dengresamarth113@gmail.com",
+            Email: "teamsocialify@gmail.com",
             Name: "ChatHub",
           },
           To: [
@@ -391,6 +401,50 @@ module.exports.resetPassword = async (req, res) => {
       });
     }
   } catch (error) {
+    return res.json({
+      status: false,
+      msg: "An error occured",
+    });
+  }
+};
+
+// Delete user
+module.exports.deleteAccount = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const user = await User.findById(id);
+
+    if (user) {
+      const friendsId = user.friends;
+      const friends = await Friends.findById(friendsId);
+      // console.log("Friends arrray",friends.friends);
+
+      for (let i = 0; i < friends.friends.length; i++) {
+        const _id = friends.friends[i];
+        // console.log("id",_id);
+        const tempUser = await User.findById(_id);
+        const tempFriends = await Friends.findById(tempUser.friends);
+        const index = tempFriends.friends.indexOf(id);
+        if (index > -1) {
+          tempFriends.friends.splice(index, 1);
+        }
+        await tempFriends.save();
+      }
+      await Friends.findByIdAndDelete(friendsId);
+      await User.findByIdAndDelete(id);
+
+      return res.json({
+        status: true,
+        msg: "Account deleted successfully",
+      });
+    } else {
+      return res.json({
+        status: false,
+        msg: "User not found",
+      });
+    }
+  } catch (error) {
+    console.log(error);
     return res.json({
       status: false,
       msg: "An error occured",

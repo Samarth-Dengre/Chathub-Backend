@@ -10,7 +10,14 @@ router.get("/searchUsers/:value", UsersController.searchUsers);
 router.get("/userDetails/:id", UsersController.getUserDetails);
 router.post("/updateDetails", UsersController.updateUser);
 router.post("/updateAbout", UsersController.updateAbout);
-router.post("/verifyEmailForRegistration", UsersController.sendEmailVerificationLink);
-router.post("/verifyEmailForResetPassword", UsersController.sendEmailVerificationLinkForResetPassword);
+router.post(
+  "/verifyEmailForRegistration",
+  UsersController.sendEmailVerificationLink
+);
+router.post(
+  "/verifyEmailForResetPassword",
+  UsersController.sendEmailVerificationLinkForResetPassword
+);
 router.post("/resetPassword", UsersController.resetPassword);
+router.delete("/deleteAccount/:id", UsersController.deleteAccount);
 module.exports = router;
