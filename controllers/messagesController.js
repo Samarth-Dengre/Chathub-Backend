@@ -1,8 +1,18 @@
 const Message = require("../model/message");
+const User = require("../model/userModel");
 
 module.exports.addMessage = async (req, res) => {
   try {
     const { from, to, message } = req.body;
+
+    const toUser = await User.findById(to);
+    if (!toUser) {
+      return res.json({
+        msg: "The user you are trying to send message does not exist",
+        status: false,
+      });
+    }
+
     const data = await Message.create({
       message: { text: message },
       users: [from, to],
