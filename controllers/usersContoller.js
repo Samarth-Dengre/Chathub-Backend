@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const Friends = require("../model/friends");
 const Mailjet = require("node-mailjet");
 const EmailVerification = require("../model/emailVerification");
-const { isValidObjectId, default: mongoose } = require("mongoose");
+require("dotenv").config();
 
 module.exports.register = async (req, res, next) => {
   try {
@@ -250,8 +250,8 @@ module.exports.updateAbout = async (req, res) => {
 // Sending email verification link to the user
 module.exports.sendEmailVerificationLink = async (req, res) => {
   const mailjet = await Mailjet.apiConnect(
-    "cc3070e7b6bf2b3919ce07ddf42b4483",
-    "7277d293795a7ec381befc21f2f29683"
+    process.env.MAILJET_API_KEY,
+    process.env.MAILJET_SECRET_KEY
   );
 
   const email = req.body.email;
@@ -319,8 +319,8 @@ module.exports.sendEmailVerificationLinkForResetPassword = async (req, res) => {
   }
 
   const mailjet = await Mailjet.apiConnect(
-    "cc3070e7b6bf2b3919ce07ddf42b4483",
-    "7277d293795a7ec381befc21f2f29683"
+    process.env.MAILJET_API_KEY,
+    process.env.MAILJET_SECRET_KEY
   );
 
   const code = Math.floor(100000 + Math.random() * 900000);
