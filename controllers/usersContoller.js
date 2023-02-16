@@ -250,7 +250,7 @@ module.exports.updateAbout = async (req, res) => {
 // Sending email verification link to the user
 module.exports.sendEmailVerificationLink = async (req, res) => {
   const mailjet = await Mailjet.apiConnect(
-    process.env.MAILJET_API_KEY,
+    process.env.MAILJET_PUBLIC_KEY,
     process.env.MAILJET_SECRET_KEY
   );
 
@@ -319,7 +319,7 @@ module.exports.sendEmailVerificationLinkForResetPassword = async (req, res) => {
   }
 
   const mailjet = await Mailjet.apiConnect(
-    process.env.MAILJET_API_KEY,
+    process.env.MAILJET_PUBLIC_KEY,
     process.env.MAILJET_SECRET_KEY
   );
 
